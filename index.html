@@ -27,11 +27,10 @@
   <body>
     <h1>Image Proxy Hash Calculator</h1>
     <form id="data">
-      <p>https://domain.tld/<u><b>300,fit,q90,jpeg/https://image.url/image.jpeg</b></u></p>
-      <p>Use only the bolded and underlined part ^</p>
-      <label for="uri">Image URL:
+      <p><b>Example URL:</b> https://domain.tld/300,fit,q90,jpeg/https://image.url/image.jpeg</p>
+      <label for="url">Image URL:
       </label>
-      <input type="text" id="uri" name="uri" size="80"><br><br>
+      <input type="text" id="url" name="url" size="80"><br><br>
       <!--<p>300,fit,q90,jpeg -> <b>resolution</b>: 300, <b>crop</b>: fit, <b>quality</b>: q90, <b>format</b>: jpeg </p>
       <label for="uri">Resolution:
       </label>
@@ -82,10 +81,11 @@
       }
 
       function encode() {
-        uri = document.getElementById("uri").value;
-        [transform, url] = uri.split('/https://');
-        [res, crop, quality, format, ...xs] = transform.split(",");
-        imgHash = md5("https://"+url);
+        userURL = document.getElementById("url").value;
+        const url = new URL(userURL)
+        const [transform, imgURL] = url.pathname.split("/https://")
+        const [res, crop, quality, format, ...xs] = transform.slice(1, transform.length).split(",")
+        imgHash = md5("https://"+imgURL);
         resolution = res.includes("x") ? res : res+"x"+res
         transformedImgHash = md5("https://"+url+"#"+resolution+","+crop+","+format+","+quality+xs);
         document.getElementById("result-0").innerText = imgHash;
